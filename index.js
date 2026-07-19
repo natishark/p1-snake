@@ -1,0 +1,199 @@
+import { Point, Snake, UnbreakableSegment } from "./snake.js";
+
+const fieldSize = 16; 
+
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
+const pixelFieldSize = Math.floor(Math.min(windowHeight, windowWidth) * 0.8);
+
+window.addEventListener('resize', function() {
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+});
+
+const canvas = document.getElementById("field");
+canvas.width = pixelFieldSize;
+canvas.height = pixelFieldSize;
+
+function drawField(ctx) {
+  ctx.strokeStyle = 'rgba(41, 19, 78, 0.5)';
+  ctx.beginPath();
+  for (let row = 0; row <= fieldSize; row++) {
+    for (let column = 0; column <= fieldSize; column++) {
+      const rowPix = Math.floor(pixelFieldSize / fieldSize * row);
+      const columnPix = Math.floor(pixelFieldSize / fieldSize * column);
+
+      drawLine(ctx, rowPix, 0, rowPix, pixelFieldSize);
+      drawLine(ctx, 0, columnPix, pixelFieldSize, columnPix);
+    }
+  }
+  ctx.stroke();
+}
+
+function drawLine(ctx, fromX, fromY, toX, toY) {
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(toX, toY);
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+let direction = { x: 0, y: 1 };
+
+// const snakeBody = new Snake(Math.floor(fieldSize / 2) - 1, Math.floor(fieldSize / 2) - 1);
+
+const snakeBody = new Snake();
+// snakeBody.setSnake([{x: 15, y:12}, {x: 12, y:12}, {x: 12, y:5}, {x: 6, y: 5}]);
+snakeBody.setSnake([new UnbreakableSegment([new Point(5, 2), new Point(5, 1), new Point(10, 1), new Point(10, 8)])]);
+
+const apple = new Point(getRandomInt(fieldSize), getRandomInt(fieldSize));
+
+function drawSnake(ctx) {
+  ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+
+  drawHead(ctx, snakeBody.body[0].get(0).x, snakeBody.body[0].get(0).y);
+  for (let segment of snakeBody.body) {
+    drawBodySegment(ctx, segment);
+  }
+}
+
+function drawHead(ctx, x, y) {
+  const headMargin = 0.2;
+  
+  drawSquareInACell(ctx, headMargin, x, y);
+}
+
+function drawBodySegment(ctx, segment) {
+  const partNum = segment.size() - 1;
+
+  for (let i = 0; i < partNum; i++) {
+    if (segment.get(i).x !== segment.get(i + 1).x) {
+      let j = segment.get(i + 1).x;
+      while (true) {
+        drawBodyPoint(ctx, j, segment.get(i).y);
+        if (segment.get(i).x < j) {
+          j--;
+        } else if (segment.get(i).x > j) {
+          j++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    if (segment.get(i).y !== segment.get(i + 1).y) {
+      let j = segment.get(i + 1).y;
+      while (true) {
+        drawBodyPoint(ctx, segment.get(i).x, j);
+        if (segment.get(i).y < j) {
+          j--;
+        } else if (segment.get(i).y > j) {
+          j++;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+}
+
+function drawBodyPoint(ctx, x, y) {
+  const bodyMargin = 0.3;
+
+  drawSquareInACell(ctx, bodyMargin, x, y);
+}
+
+function drawApple(ctx, apple) {
+  ctx.fillStyle = '#910404ff';
+
+  const cellWidth = pixelFieldSize / fieldSize;
+  ctx.beginPath();
+  ctx.arc((apple.x + 0.5) * cellWidth, (apple.y + 0.5) * cellWidth, cellWidth * 0.4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawSquareInACell(ctx, margin, x, y) {
+  const cellWidth = pixelFieldSize / fieldSize;
+
+  const xStart = cellWidth * x + cellWidth * margin;
+  const yStart = cellWidth * y + cellWidth * margin;
+  const xEnd = cellWidth * (x + 1) - cellWidth * margin;
+  const yEnd = cellWidth * (y + 1) - cellWidth * margin;
+
+  ctx.fillRect(xStart, yStart, xEnd - xStart, yEnd - yStart);
+}
+
+let lastTimestamp = performance.now();
+const updateInterval = 400;
+
+function gameLoop(currentTime) {
+  requestAnimationFrame(gameLoop);
+
+  if (currentTime - lastTimestamp >= updateInterval) {
+    lastTimestamp = currentTime;
+
+    updateGame();
+    draw();
+  } 
+}
+
+function updateGame() {
+  snakeBody.move(direction, false, fieldSize);
+  // console.log(snakeBody.body);
+}
+
+function draw() {
+  if (canvas.getContext) {
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = '#ffffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // console.log("cleared")
+    drawField(ctx);
+    // console.log('field drawn')
+    drawSnake(ctx);
+    drawApple(ctx, apple);
+    // console.log('snake drawn')
+
+    // drawFood();
+  }
+}
+
+document.addEventListener('keydown', function(event) {
+  let newDirection = { x: 0, y: 0 };
+  console.log(event.key)
+  switch (event.key) {
+    case 'ArrowLeft':
+    case 'a':
+      newDirection.x = -1;
+      event.preventDefault();
+      break;
+    case 'ArrowRight':
+    case 'd':
+      newDirection.x = 1;
+      event.preventDefault();
+      break;
+    case 'ArrowUp':
+    case 'w':
+      newDirection.y = -1;
+      event.preventDefault();
+      break;
+    case 'ArrowDown':
+    case 's':
+      newDirection.y = 1;
+      event.preventDefault();
+      break;
+  }
+
+  if (
+    Math.abs(newDirection.x - direction.x) < 2 && 
+    Math.abs(newDirection.y - direction.y) < 2
+  ) {
+    direction = newDirection;
+  }
+
+});
+
+requestAnimationFrame(gameLoop);
