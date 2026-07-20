@@ -2,6 +2,23 @@ import { Point, Snake, UnbreakableSegment } from "./snake.js";
 
 const fieldSize = 16; 
 
+const occupationMap = [];
+for (let i = 0; i < fieldSize; i++) {
+  const row = [];
+  for (let j = 0; j < fieldSize; j++) {
+    row.push(false);
+  }
+  occupationMap.push(row);
+}
+
+function fillOccupied(snake) {
+  const bodyPoinst = snake.getBodyPoints();
+  for (let {x, y} of bodyPoinst) {
+    occupationMap[x][y] = true;
+  }
+  console.log(occupationMap);
+}
+
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
@@ -40,15 +57,33 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+function getRandomUnoccupiedPoint(snake) {
+  let randomCellNumber = getRandomInt(fieldSize * fieldSize - snake.size);
+
+  for (let x = 0; x < fieldSize; x++) {
+    for (let y = 0; y < fieldSize; y++) {
+      if (!occupationMap[x][y]) {
+        randomCellNumber--;
+      }
+
+      if (randomCellNumber < 0) {
+        return new Point(x, y);
+      }
+    }
+  }
+}
+
 let direction = { x: 0, y: 1 };
 
 // const snakeBody = new Snake(Math.floor(fieldSize / 2) - 1, Math.floor(fieldSize / 2) - 1);
 
 const snakeBody = new Snake();
 // snakeBody.setSnake([{x: 15, y:12}, {x: 12, y:12}, {x: 12, y:5}, {x: 6, y: 5}]);
-snakeBody.setSnake([new UnbreakableSegment([new Point(5, 2), new Point(5, 1), new Point(10, 1), new Point(10, 8)])]);
+snakeBody.setSnake([new UnbreakableSegment([new Point(5, 2), new Point(5, 1), new Point(10, 1), new Point(10, 8)])], 14);
 
-const apple = new Point(getRandomInt(fieldSize), getRandomInt(fieldSize));
+fillOccupied(snakeBody);
+
+let apple = getRandomUnoccupiedPoint(snakeBody);
 
 function drawSnake(ctx) {
   ctx.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -140,8 +175,15 @@ function gameLoop(currentTime) {
 }
 
 function updateGame() {
-  snakeBody.move(direction, false, fieldSize);
-  // console.log(snakeBody.body);
+  // snakeBody.move(direction, false, fieldSize);
+  const newHead = snakeBody.moveHead(direction, fieldSize);
+  occupationMap[newHead.x, newHead.y] = true;
+  if (newHead.x === apple.x && newHead.y === apple.y) {
+    apple = getRandomUnoccupiedPoint(snakeBody);
+  } else {
+    const freedCell = snakeBody.moveTail();
+    occupationMap[freedCell.x, freedCell.y] = false;
+  }
 }
 
 function draw() {

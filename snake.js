@@ -2,13 +2,55 @@
 class Snake {
   constructor(x, y) {
     this.body = [new UnbreakableSegment([new Point(x, y), new Point(x, y)])];
+    this.size = 1;
   }
 
-  setSnake(body) {
+  setSnake(body, size) {
     this.body = body;
+    this.size = size;
   }
 
-  move(direction, hasAte, fieldSize) {
+  getBodyPoints() {
+    const bodyPoints = [];
+    for (let segment of this.body) {
+      const partNum = segment.size() - 1;
+
+      for (let i = 0; i < partNum; i++) {
+        if (segment.get(i).x !== segment.get(i + 1).x) {
+          let j = segment.get(i + 1).x;
+          while (true) {
+            bodyPoints.push(new Point(j, segment.get(i).y));
+
+            if (segment.get(i).x < j) {
+              j--;
+            } else if (segment.get(i).x > j) {
+              j++;
+            } else {
+              break;
+            }
+          }
+        }
+
+        if (segment.get(i).y !== segment.get(i + 1).y) {
+          let j = segment.get(i + 1).y;
+          while (true) {
+            bodyPoints.push(new Point(segment.get(i).x, j));
+            
+            if (segment.get(i).y < j) {
+              j--;
+            } else if (segment.get(i).y > j) {
+              j++;
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
+    return bodyPoints;
+  }
+
+  moveHead(direction, fieldSize) {
     const firstSegment = this.body[0];
     
     const currentDirection = countVector(firstSegment.get(1), firstSegment.get(0));
@@ -31,29 +73,89 @@ class Snake {
       firstSegment.unshift(newHeadPoint);
     }
 
-    if (!hasAte) {
-      const lastSegment = this.body[this.body.length - 1];
+    this.size++;
 
-      if (lastSegment.get(lastSegment.size() - 1).equals(lastSegment.get(lastSegment.size() - 2))) {
-        this.body.pop();
-      } else {
-        const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
-        const newTailPoint = new Point(
-          lastSegment.get(lastSegment.size() - 1).x + tailDirection.x,
-          lastSegment.get(lastSegment.size() - 1).y + tailDirection.y,
-        );
-
-        if (newTailPoint.x === lastSegment.get(lastSegment.size() - 2).x && 
-            newTailPoint.y === lastSegment.get(lastSegment.size() - 2).y &&
-            lastSegment.size() > 2
-        ) {
-          lastSegment.pop();
-        } else {
-          lastSegment.set(lastSegment.size() - 1, newTailPoint);
-        }
-      }
-    }
+    return this.body[0].get(0);
   }
+
+  moveTail() {
+    const lastSegment = this.body[this.body.length - 1];
+
+    if (lastSegment.get(lastSegment.size() - 1).equals(lastSegment.get(lastSegment.size() - 2))) {
+      return this.body.pop().get(0);
+    } 
+
+    const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
+
+    const freedCell = lastSegment.get(lastSegment.size() - 1);
+
+    const newTailPoint = new Point(
+      lastSegment.get(lastSegment.size() - 1).x + tailDirection.x,
+      lastSegment.get(lastSegment.size() - 1).y + tailDirection.y,
+    );
+
+    if (newTailPoint.x === lastSegment.get(lastSegment.size() - 2).x && 
+        newTailPoint.y === lastSegment.get(lastSegment.size() - 2).y &&
+        lastSegment.size() > 2
+    ) {
+      lastSegment.pop();
+    } else {
+      lastSegment.set(lastSegment.size() - 1, newTailPoint);
+    }
+
+    this.size--;
+    
+    return freedCell;
+  }
+
+  // move(direction, hasAte, fieldSize) {
+  //   const firstSegment = this.body[0];
+    
+  //   const currentDirection = countVector(firstSegment.get(1), firstSegment.get(0));
+
+  //   const newHeadPoint = new Point(
+  //     firstSegment.get(0).x + direction.x,
+  //     firstSegment.get(0).y + direction.y,
+  //   );
+
+  //   if (
+  //     newHeadPoint.x >= fieldSize || 
+  //     newHeadPoint.x <  0         ||
+  //     newHeadPoint.y >= fieldSize ||
+  //     newHeadPoint.y < 0
+  //   ) {
+  //     this.body.unshift(this.countNewSegment(newHeadPoint, fieldSize));
+  //   } else if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
+  //     firstSegment.set(0, newHeadPoint);
+  //   } else {
+  //     firstSegment.unshift(newHeadPoint);
+  //   }
+
+  //   if (!hasAte) {
+  //     const lastSegment = this.body[this.body.length - 1];
+
+  //     if (lastSegment.get(lastSegment.size() - 1).equals(lastSegment.get(lastSegment.size() - 2))) {
+  //       this.body.pop();
+  //     } else {
+  //       const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
+  //       const newTailPoint = new Point(
+  //         lastSegment.get(lastSegment.size() - 1).x + tailDirection.x,
+  //         lastSegment.get(lastSegment.size() - 1).y + tailDirection.y,
+  //       );
+
+  //       if (newTailPoint.x === lastSegment.get(lastSegment.size() - 2).x && 
+  //           newTailPoint.y === lastSegment.get(lastSegment.size() - 2).y &&
+  //           lastSegment.size() > 2
+  //       ) {
+  //         lastSegment.pop();
+  //       } else {
+  //         lastSegment.set(lastSegment.size() - 1, newTailPoint);
+  //       }
+  //     }
+  //   } else {
+  //     this.size++;
+  //   }
+  // }
 
   countNewSegment(point, fieldSize) {
     const newPoint = point.copy();
