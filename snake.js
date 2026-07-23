@@ -17,13 +17,13 @@ class Snake {
 
       for (let i = 0; i < partNum; i++) {
         if (segment.get(i).x !== segment.get(i + 1).x) {
-          let j = segment.get(i + 1).x;
+          let j = segment.get(i).x;
           while (true) {
             bodyPoints.push(new Point(j, segment.get(i).y));
 
-            if (segment.get(i).x < j) {
+            if (segment.get(i + 1).x < j) {
               j--;
-            } else if (segment.get(i).x > j) {
+            } else if (segment.get(i + 1).x > j) {
               j++;
             } else {
               break;
@@ -32,13 +32,13 @@ class Snake {
         }
 
         if (segment.get(i).y !== segment.get(i + 1).y) {
-          let j = segment.get(i + 1).y;
+          let j = segment.get(i).y;
           while (true) {
             bodyPoints.push(new Point(segment.get(i).x, j));
             
-            if (segment.get(i).y < j) {
+            if (segment.get(i + 1).y < j) {
               j--;
-            } else if (segment.get(i).y > j) {
+            } else if (segment.get(i + 1).y > j) {
               j++;
             } else {
               break;
@@ -104,7 +104,7 @@ class Snake {
     }
 
     this.size--;
-    
+
     return freedCell;
   }
 

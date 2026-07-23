@@ -88,9 +88,11 @@ let apple = getRandomUnoccupiedPoint(snakeBody);
 function drawSnake(ctx) {
   ctx.fillStyle = 'rgba(0, 0, 0, 1)';
 
-  drawHead(ctx, snakeBody.body[0].get(0).x, snakeBody.body[0].get(0).y);
-  for (let segment of snakeBody.body) {
-    drawBodySegment(ctx, segment);
+  const bodyPoints = snakeBody.getBodyPoints();
+  drawHead(ctx, bodyPoints[0].x, bodyPoints[0].y);
+
+  for (let i = 1; i < bodyPoints.length; i++) {
+    drawBodyPoint(ctx, bodyPoints[i].x, bodyPoints[i].y);
   }
 }
 
@@ -98,40 +100,6 @@ function drawHead(ctx, x, y) {
   const headMargin = 0.2;
   
   drawSquareInACell(ctx, headMargin, x, y);
-}
-
-function drawBodySegment(ctx, segment) {
-  const partNum = segment.size() - 1;
-
-  for (let i = 0; i < partNum; i++) {
-    if (segment.get(i).x !== segment.get(i + 1).x) {
-      let j = segment.get(i + 1).x;
-      while (true) {
-        drawBodyPoint(ctx, j, segment.get(i).y);
-        if (segment.get(i).x < j) {
-          j--;
-        } else if (segment.get(i).x > j) {
-          j++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    if (segment.get(i).y !== segment.get(i + 1).y) {
-      let j = segment.get(i + 1).y;
-      while (true) {
-        drawBodyPoint(ctx, segment.get(i).x, j);
-        if (segment.get(i).y < j) {
-          j--;
-        } else if (segment.get(i).y > j) {
-          j++;
-        } else {
-          break;
-        }
-      }
-    }
-  }
 }
 
 function drawBodyPoint(ctx, x, y) {
@@ -175,7 +143,6 @@ function gameLoop(currentTime) {
 }
 
 function updateGame() {
-  // snakeBody.move(direction, false, fieldSize);
   const newHead = snakeBody.moveHead(direction, fieldSize);
   occupationMap[newHead.x, newHead.y] = true;
   if (newHead.x === apple.x && newHead.y === apple.y) {
@@ -192,14 +159,10 @@ function draw() {
 
     ctx.fillStyle = '#ffffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // console.log("cleared")
+    
     drawField(ctx);
-    // console.log('field drawn')
     drawSnake(ctx);
     drawApple(ctx, apple);
-    // console.log('snake drawn')
-
-    // drawFood();
   }
 }
 
