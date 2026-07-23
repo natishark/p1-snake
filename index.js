@@ -2,6 +2,20 @@ import { Point, Snake, UnbreakableSegment } from "./snake.js";
 
 const fieldSize = 16; 
 
+const GameState = {
+  Play: "Play",
+  Stop: "Stop",
+}
+
+const GameResult = {
+  Process: "Process",
+  Lose: "Lose",
+  Win: "Win",
+}
+
+let currentGameState = GameState.Play;
+let currentGameResult = GameResult.Process;
+
 const occupationMap = [];
 for (let i = 0; i < fieldSize; i++) {
   const row = [];
@@ -133,24 +147,42 @@ const updateInterval = 400;
 // const updateInterval = 10000;
 
 function gameLoop(currentTime) {
-  requestAnimationFrame(gameLoop);
+  const requestId = requestAnimationFrame(gameLoop);
 
   if (currentTime - lastTimestamp >= updateInterval) {
     lastTimestamp = currentTime;
 
     updateGame();
     draw();
+
+    if (currentGameState === GameState.Stop) {
+      cancelAnimationFrame(requestId);
+      if (currentGameResult !== GameResult.Process) {
+        alert(currentGameResult);
+      }
+    }
   } 
 }
 
 function updateGame() {
   const newHead = snakeBody.moveHead(direction, fieldSize);
+  let collision = occupationMap[newHead.x][newHead.y];
   occupationMap[newHead.x][newHead.y] = true;
-  if (newHead.x === apple.x && newHead.y === apple.y) {
+  if (newHead.equals(apple)) {
     apple = getRandomUnoccupiedPoint(snakeBody);
   } else {
     const freedCell = snakeBody.moveTail();
-    occupationMap[freedCell.x][freedCell.y] = false;
+    
+    if (newHead.equals(freedCell)) {
+      collision = false;
+    } else {
+      occupationMap[freedCell.x][freedCell.y] = false;
+    }
+  }
+
+  if (collision) {
+    currentGameState = GameState.Stop;
+    currentGameResult = GameResult.Lose;
   }
 }
 
