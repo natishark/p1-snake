@@ -130,6 +130,7 @@ function drawSquareInACell(ctx, margin, x, y) {
 
 let lastTimestamp = performance.now();
 const updateInterval = 400;
+// const updateInterval = 10000;
 
 function gameLoop(currentTime) {
   requestAnimationFrame(gameLoop);
@@ -144,12 +145,12 @@ function gameLoop(currentTime) {
 
 function updateGame() {
   const newHead = snakeBody.moveHead(direction, fieldSize);
-  occupationMap[newHead.x, newHead.y] = true;
+  occupationMap[newHead.x][newHead.y] = true;
   if (newHead.x === apple.x && newHead.y === apple.y) {
     apple = getRandomUnoccupiedPoint(snakeBody);
   } else {
     const freedCell = snakeBody.moveTail();
-    occupationMap[freedCell.x, freedCell.y] = false;
+    occupationMap[freedCell.x][freedCell.y] = false;
   }
 }
 
@@ -159,9 +160,11 @@ function draw() {
 
     ctx.fillStyle = '#ffffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     drawField(ctx);
     drawSnake(ctx);
+    console.log(occupationMap);
+    console.log(apple);
     drawApple(ctx, apple);
   }
 }
