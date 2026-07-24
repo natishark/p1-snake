@@ -89,11 +89,11 @@ function getRandomUnoccupiedPoint(snake) {
 
 let direction = { x: 0, y: 1 };
 
-// const snakeBody = new Snake(Math.floor(fieldSize / 2) - 1, Math.floor(fieldSize / 2) - 1);
+const snakeBody = new Snake(Math.floor(fieldSize / 2) - 1, Math.floor(fieldSize / 2) - 1);
 
-const snakeBody = new Snake();
+// const snakeBody = new Snake();
 // snakeBody.setSnake([{x: 15, y:12}, {x: 12, y:12}, {x: 12, y:5}, {x: 6, y: 5}]);
-snakeBody.setSnake([new UnbreakableSegment([new Point(5, 2), new Point(5, 1), new Point(10, 1), new Point(10, 8)])], 14);
+// snakeBody.setSnake([new UnbreakableSegment([new Point(5, 2), new Point(5, 1), new Point(10, 1), new Point(10, 8)])], 14);
 
 fillOccupied(snakeBody);
 

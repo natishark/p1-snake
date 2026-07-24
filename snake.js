@@ -29,9 +29,7 @@ class Snake {
               break;
             }
           }
-        }
-
-        if (segment.get(i).y !== segment.get(i + 1).y) {
+        } else {
           let j = segment.get(i).y;
           while (true) {
             bodyPoints.push(new Point(segment.get(i).x, j));
