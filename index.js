@@ -1,6 +1,7 @@
 import { Point, Snake, UnbreakableSegment } from "./snake.js";
 
-const fieldSize = 16; 
+// const fieldSize = 16; 
+const fieldSize = 4; 
 
 const GameState = {
   Play: "Play",
@@ -72,6 +73,9 @@ function getRandomInt(max) {
 }
 
 function getRandomUnoccupiedPoint(snake) {
+  if (fieldSize * fieldSize === snake.size) {
+    return undefined;
+  }
   let randomCellNumber = getRandomInt(fieldSize * fieldSize - snake.size);
 
   for (let x = 0; x < fieldSize; x++) {
@@ -123,12 +127,14 @@ function drawBodyPoint(ctx, x, y) {
 }
 
 function drawApple(ctx, apple) {
-  ctx.fillStyle = '#910404ff';
+  if (apple !== undefined) {
+    ctx.fillStyle = '#910404ff';
 
-  const cellWidth = pixelFieldSize / fieldSize;
-  ctx.beginPath();
-  ctx.arc((apple.x + 0.5) * cellWidth, (apple.y + 0.5) * cellWidth, cellWidth * 0.4, 0, Math.PI * 2);
-  ctx.fill();
+    const cellWidth = pixelFieldSize / fieldSize;
+    ctx.beginPath();
+    ctx.arc((apple.x + 0.5) * cellWidth, (apple.y + 0.5) * cellWidth, cellWidth * 0.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
 function drawSquareInACell(ctx, margin, x, y) {
@@ -178,6 +184,11 @@ function updateGame() {
     } else {
       occupationMap[freedCell.x][freedCell.y] = false;
     }
+  }
+
+  if (snakeBody.size === fieldSize * fieldSize) {
+    currentGameState = GameState.Stop;
+    currentGameResult = GameResult.Win;
   }
 
   if (collision) {
