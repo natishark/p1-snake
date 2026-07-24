@@ -236,4 +236,5 @@ document.addEventListener('keydown', function(event) {
 
 });
 
+draw();
 requestAnimationFrame(gameLoop);
