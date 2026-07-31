@@ -106,55 +106,6 @@ class Snake {
     return freedCell;
   }
 
-  // move(direction, hasAte, fieldSize) {
-  //   const firstSegment = this.body[0];
-    
-  //   const currentDirection = countVector(firstSegment.get(1), firstSegment.get(0));
-
-  //   const newHeadPoint = new Point(
-  //     firstSegment.get(0).x + direction.x,
-  //     firstSegment.get(0).y + direction.y,
-  //   );
-
-  //   if (
-  //     newHeadPoint.x >= fieldSize || 
-  //     newHeadPoint.x <  0         ||
-  //     newHeadPoint.y >= fieldSize ||
-  //     newHeadPoint.y < 0
-  //   ) {
-  //     this.body.unshift(this.countNewSegment(newHeadPoint, fieldSize));
-  //   } else if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
-  //     firstSegment.set(0, newHeadPoint);
-  //   } else {
-  //     firstSegment.unshift(newHeadPoint);
-  //   }
-
-  //   if (!hasAte) {
-  //     const lastSegment = this.body[this.body.length - 1];
-
-  //     if (lastSegment.get(lastSegment.size() - 1).equals(lastSegment.get(lastSegment.size() - 2))) {
-  //       this.body.pop();
-  //     } else {
-  //       const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
-  //       const newTailPoint = new Point(
-  //         lastSegment.get(lastSegment.size() - 1).x + tailDirection.x,
-  //         lastSegment.get(lastSegment.size() - 1).y + tailDirection.y,
-  //       );
-
-  //       if (newTailPoint.x === lastSegment.get(lastSegment.size() - 2).x && 
-  //           newTailPoint.y === lastSegment.get(lastSegment.size() - 2).y &&
-  //           lastSegment.size() > 2
-  //       ) {
-  //         lastSegment.pop();
-  //       } else {
-  //         lastSegment.set(lastSegment.size() - 1, newTailPoint);
-  //       }
-  //     }
-  //   } else {
-  //     this.size++;
-  //   }
-  // }
-
   countNewSegment(point, fieldSize) {
     const newPoint = point.copy();
     for (let coord in newPoint) {
