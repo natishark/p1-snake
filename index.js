@@ -1,10 +1,15 @@
 import { Game, GameState, GameResult } from "./game.js";
 import { Point } from "./snake.js";
 import { Rendering } from "./rendering.js";
+import { getLocalStorageOrNull } from "./storageCheck.js";
+
+// to start server use 'live-server .' in console in project floder for now
 
 const fieldSize = 16; 
 const fieldSizeRatio = 0.8;
 const startDirection = new Point(1, 0);
+
+const STORAGE_BEST_SCORE_KEY = "snake-best-score";
 
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
@@ -23,7 +28,7 @@ window.addEventListener('resize', function() {
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
   rendering.updateCanvasSize(windowWidth, windowHeight);
-  // draw()?
+  rendering.drawGame(game);
 });
 
 document.addEventListener('keydown', function(event) {
@@ -66,6 +71,35 @@ const updateInterval = 400;
 let lastTimestamp = performance.now();
 let animationFrameRequestId = 0;
 
+const currentScoreField = document.getElementById("fld-current-score");
+let bestScoreField = document.getElementById("fld-best-score");
+
+const scorePair = { currentScore: parseInt(currentScoreField.textContent) };
+
+const localStorageOrNull = getLocalStorageOrNull();
+if (localStorageOrNull) {
+  if (localStorageOrNull.getItem(STORAGE_BEST_SCORE_KEY)) {
+    bestScoreField.textContent = localStorageOrNull.getItem(STORAGE_BEST_SCORE_KEY);
+    scorePair.bestScore = parseInt(bestScoreField.textContent);
+  } else {
+    localStorageOrNull.setItem(STORAGE_BEST_SCORE_KEY, scorePair.currentScore);
+    scorePair.bestScore = scorePair.currentScore;
+  }
+} else {
+  bestScoreField.remove();
+  bestScoreField = null;
+}
+
+function updateScores() {
+  scorePair.currentScore = game.snakeBody.size;
+  currentScoreField.textContent = scorePair.currentScore;
+  if ("bestScore" in scorePair && scorePair.currentScore > scorePair.bestScore) {
+    scorePair.bestScore = scorePair.currentScore;
+    localStorageOrNull.setItem(STORAGE_BEST_SCORE_KEY, scorePair.bestScore);
+    bestScoreField.textContent = scorePair.bestScore;
+  }
+}
+
 function gameLoop(currentTime) {
   animationFrameRequestId = requestAnimationFrame(gameLoop);
 
@@ -73,6 +107,7 @@ function gameLoop(currentTime) {
     lastTimestamp = currentTime;
 
     game.updateGame();
+    updateScores()
     rendering.drawGame(game);
 
     if (game.currentGameState === GameState.Stop) {
@@ -84,8 +119,8 @@ function gameLoop(currentTime) {
   } 
 }
 
-const startButton = document.getElementById("btn-start");
-startButton.addEventListener("click", startGame);
+const playButton = document.getElementById("btn-play");
+playButton.addEventListener("click", playGame);
 
 const restartButton = document.getElementById("btn-restart");
 restartButton.addEventListener("click", restartGame);
@@ -93,7 +128,7 @@ restartButton.addEventListener("click", restartGame);
 const stopButton = document.getElementById("btn-pause");
 stopButton.addEventListener("click", stopGame);
 
-function startGame() {
+function playGame() {
   game.currentGameState = GameState.Play;
   lastTimestamp = performance.now();
   animationFrameRequestId = requestAnimationFrame(gameLoop);
@@ -110,7 +145,7 @@ function restartGame() {
   }
   game = new Game(fieldSize, startDirection);
   rendering.drawGame(game);
-  startGame();
+  playGame();
 }
 
 rendering.drawGame(game);
