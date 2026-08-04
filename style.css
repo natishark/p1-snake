@@ -1,10 +1,135 @@
-/* #field {
-  width: 50rem;
-  height: 50rem;
-} */
+@font-face {
+  font-family: 'Pixelated';
+  src: url('/fonts/8bitoperatorJVE.ttf') format('ttf'),
+       url('/fonts/8bitoperatorJVE.woff') format('woff');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
 
 .visually-hidden {
   display: none;
   width: 0;
   height: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+body {
+  min-width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: bisque;
+
+  font-size: 1.3rem;
+  font-family: 'Pixelated', sans-serif;
+}
+
+.site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1.3rem;
+}
+
+.site-header a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 2rem;
+
+  text-decoration: none;
+  color: rgb(152, 36, 7);
+}
+
+.logo-img {
+  height: 3.5rem;
+}
+
+.game-body {
+  padding: 4vh;
+  background-color: rgb(101, 66, 22);
+  border-radius: 1px;
+  box-shadow: 8px -5px 0px 1px rgb(180, 146, 105);
+  color: beige;
+}
+
+.game-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+.score-info {
+  flex: 1 1 0;
+}
+
+.score-info:first-child {
+  text-align: start;
+}
+
+.score-info:last-child {
+  text-align: end;
+}
+
+.buttons-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.buttons-section button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 9vh;
+  height: 9vh;
+}
+
+.buttons-section button svg {
+  fill: antiquewhite;
+}
+
+.buttons-section button:hover svg {
+  fill: rgb(231, 199, 156);
+}
+
+#btn-play svg {
+  width: 9vh;
+  height: 9vh;
+}
+
+#btn-pause svg {
+  width: 7.5vh;
+  height: 7.5vh;
+}
+
+#btn-restart svg {
+  width: 6.8vh;
+  height: 6.8vh;
 }

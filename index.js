@@ -6,7 +6,7 @@ import { getLocalStorageOrNull } from "./storageCheck.js";
 // to start server use 'live-server .' in console in project floder for now
 
 const fieldSize = 16; 
-const fieldSizeRatio = 0.8;
+const fieldSizeRatio = 0.7;
 const startDirection = new Point(1, 0);
 
 const STORAGE_BEST_SCORE_KEY = "snake-best-score";
@@ -113,7 +113,7 @@ function gameLoop(currentTime) {
     if (game.currentGameState === GameState.Stop) {
       cancelAnimationFrame(animationFrameRequestId);
       if (game.currentGameResult !== GameResult.Process) {
-        alert(currentGameResult);
+        alert(game.currentGameResult);
       }
     }
   } 
@@ -132,11 +132,15 @@ function playGame() {
   game.currentGameState = GameState.Play;
   lastTimestamp = performance.now();
   animationFrameRequestId = requestAnimationFrame(gameLoop);
+  playButton.disabled = true;
+  stopButton.disabled = false;
 }
 
 function stopGame() {
   game.currentGameState = GameState.Stop;
   cancelAnimationFrame(animationFrameRequestId);
+  stopButton.disabled = true;
+  playButton.disabled = false;
 }
 
 function restartGame() {
