@@ -1,5 +1,13 @@
 class Rendering {
-  constructor(windowHeight, windowWidth, fieldSizeRatio, snakeHeadPointMargin, snakeBodyPointMargin) {
+  constructor(
+    imageSourcesCollection, 
+    windowHeight, 
+    windowWidth, 
+    fieldSizeRatio, 
+    snakeHeadPointMargin, 
+    snakeBodyPointMargin
+  ) {
+    this.imageSourcesCollection = imageSourcesCollection;
     this.snakeHeadPointMargin = snakeHeadPointMargin;
     this.snakeBodyPointMargin = snakeBodyPointMargin;
 
@@ -81,7 +89,8 @@ class Rendering {
   }
 
   drawHead(x, y, fieldSize) {
-    this.drawSquareInACell(this.snakeHeadPointMargin, x, y, fieldSize);
+    // this.drawSquareInACell(this.snakeHeadPointMargin, x, y, fieldSize);
+    this.drawImageInACell(this.imageSourcesCollection.headRight, x, y, fieldSize);
   }
 
   drawBodyPoint(x, y, fieldSize) {
@@ -97,6 +106,12 @@ class Rendering {
     const yEnd = cellWidth * (y + 1) - cellWidth * margin;
 
     this.ctx.fillRect(xStart, yStart, xEnd - xStart, yEnd - yStart);
+  }
+
+  drawImageInACell(image, x, y, fieldSize) {
+    const cellWidth = this.pixelFieldSize / fieldSize;
+
+    this.ctx.drawImage(image, cellWidth * x + 1, cellWidth * y + 1, cellWidth - 2, cellWidth - 2);
   }
 
   drawLine(fromX, fromY, toX, toY) {

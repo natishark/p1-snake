@@ -33,7 +33,8 @@ class Game {
       this.occupationMap.push(row);
     }
 
-    this.snakeBody = new Snake(Math.floor(fieldSize / 2) - 1, Math.floor(fieldSize / 2) - 1);
+    const snakeHeadCoord = Math.floor(fieldSize / 2) - 1;
+    this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - 1, snakeHeadCoord);
     this.fillOccupied();
     this.apple = getRandomUnoccupiedPoint(fieldSize, this.snakeBody.size, this.occupationMap);
     this.currentGameState = GameState.Stop;
