@@ -34,7 +34,7 @@ class Game {
     }
 
     const snakeHeadCoord = Math.floor(fieldSize / 2) - 1;
-    this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - 1, snakeHeadCoord);
+    this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - 2, snakeHeadCoord, 2);
     this.fillOccupied();
     this.apple = getRandomUnoccupiedPoint(fieldSize, this.snakeBody.size, this.occupationMap);
     this.currentGameState = GameState.Stop;
@@ -42,9 +42,9 @@ class Game {
   }
 
   fillOccupied() {
-    const bodyPoints = this.snakeBody.getBodyPoints();
-    for (let {x, y} of bodyPoints) {
-      this.occupationMap[x][y] = true;
+    const directionedBodyPoints = this.snakeBody.getDirectionedBodyPoints();
+    for (let {point, direction} of directionedBodyPoints) {
+      this.occupationMap[point.x][point.y] = true;
     }
   }
 
@@ -63,6 +63,8 @@ class Game {
         this.occupationMap[freedCell.x][freedCell.y] = false;
       }
     }
+
+    console.log("update game: ", this.snakeBody);
 
     if (this.snakeBody.size === this.fieldSize * this.fieldSize) {
       this.currentGameState = GameState.Stop;

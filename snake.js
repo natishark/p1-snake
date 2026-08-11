@@ -1,8 +1,8 @@
 // snake is an array of points
 class Snake {
-  constructor(xStart, yStart, xEnd, yEnd) {
+  constructor(xStart, yStart, xEnd, yEnd, size) {
     this.body = [new UnbreakableSegment([new Point(xStart, yStart), new Point(xEnd, yEnd)])];
-    this.size = 1;
+    this.size = size;
   }
 
   setSnake(body, size) {
@@ -48,40 +48,87 @@ class Snake {
     return bodyPoints;
   }
 
+  getDirectionedBodyPoints() {
+    const directionedBodyPoints = [];
+    for (let segment of this.body) {
+      const partNum = segment.size() - 1;
+
+      for (let i = 0; i < partNum; i++) {
+        const currentDirection = countVector(segment.get(i + 1), segment.get(i));
+        if (segment.get(i).x !== segment.get(i + 1).x) {
+          let j = segment.get(i).x - currentDirection.x;
+          // we're changing everything here because we now have virtual head but it seems hard. Good luck!
+          while (true) {
+            // directionedBodyPoints.push(new Point(j, segment.get(i).y));
+            directionedBodyPoints.push({
+              point: new Point(j, segment.get(i).y),
+              direction: currentDirection
+            });
+            if (segment.get(i + 1).x !== j) {
+              j -= currentDirection.x
+            } else {
+              if (i !== partNum - 1) {
+                directionedBodyPoints[directionedBodyPoints.length - 1].direction = new Point(0, 0);
+              }
+              break;
+            }
+          }
+        } else {
+          let j = segment.get(i).y - currentDirection.y;
+          while (true) {
+            directionedBodyPoints.push({
+              point: new Point(segment.get(i).x, j),
+              direction: currentDirection
+            });
+
+            if (segment.get(i + 1).y !== j) {
+              j -= currentDirection.y
+            } else {
+              if (i !== partNum - 1) {
+                directionedBodyPoints[directionedBodyPoints.length - 1].direction = new Point(0, 0);
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+    return directionedBodyPoints;
+  }
+
   moveHead(direction, fieldSize) {
     const firstSegment = this.body[0];
     
     const currentDirection = countVector(firstSegment.get(1), firstSegment.get(0));
 
     const newHeadPoint = new Point(
-      firstSegment.get(0).x + direction.x,
-      firstSegment.get(0).y + direction.y,
+      firstSegment.get(0).x - currentDirection.x + 2 * direction.x,
+      firstSegment.get(0).y - currentDirection.y + 2 * direction.y,
     );
 
     if (
-      newHeadPoint.x >= fieldSize || 
-      newHeadPoint.x <  0         ||
-      newHeadPoint.y >= fieldSize ||
-      newHeadPoint.y < 0
+      newHeadPoint.x > fieldSize || 
+      newHeadPoint.x < -1        ||
+      newHeadPoint.y > fieldSize ||
+      newHeadPoint.y < -1
     ) {
       this.body.unshift(this.countNewSegment(newHeadPoint, fieldSize));
     } else if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
       firstSegment.set(0, newHeadPoint);
     } else {
+      firstSegment.set(0, new Point(firstSegment.get(0).x - currentDirection.x, firstSegment.get(0).y - currentDirection.y));
       firstSegment.unshift(newHeadPoint);
     }
 
     this.size++;
 
-    return this.body[0].get(0);
+    const newVirtualHeadPoint = this.body[0].get(0);
+
+    return new Point(newVirtualHeadPoint.x - direction.x, newVirtualHeadPoint.y - direction.y);
   }
 
   moveTail() {
     const lastSegment = this.body[this.body.length - 1];
-
-    if (lastSegment.get(lastSegment.size() - 1).equals(lastSegment.get(lastSegment.size() - 2))) {
-      return this.body.pop().get(0);
-    } 
 
     const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
 
@@ -91,6 +138,10 @@ class Snake {
       lastSegment.get(lastSegment.size() - 1).x + tailDirection.x,
       lastSegment.get(lastSegment.size() - 1).y + tailDirection.y,
     );
+
+    if (lastSegment.size() === 2 && newTailPoint.equals(lastSegment.get(0))) {
+      return this.body.pop().get(1);
+    } 
 
     if (newTailPoint.x === lastSegment.get(lastSegment.size() - 2).x && 
         newTailPoint.y === lastSegment.get(lastSegment.size() - 2).y &&
@@ -107,16 +158,19 @@ class Snake {
   }
 
   countNewSegment(point, fieldSize) {
-    const newPoint = point.copy();
-    for (let coord in newPoint) {
-      if (newPoint[coord] >= fieldSize) {
-        newPoint[coord] = 0;
+    const newHeadPoint = point.copy();
+    const newTailPoint = point.copy();
+    for (let coord in newHeadPoint) {
+      if (newHeadPoint[coord] > fieldSize) {
+        newHeadPoint[coord] = 1;
+        newTailPoint[coord] = 0;
       }
-      if (newPoint[coord] < 0) {
-        newPoint[coord] = fieldSize - 1;
+      if (newHeadPoint[coord] < 0) {
+        newHeadPoint[coord] = fieldSize - 2;
+        newTailPoint[coord] = fieldSize - 1;
       }
     }
-    return new UnbreakableSegment([newPoint, newPoint.copy()]);
+    return new UnbreakableSegment([newHeadPoint, newTailPoint]);
   }
 }
 
@@ -166,25 +220,11 @@ function countVector(point1, point2) {
 
   if (point1.x === point2.x) {
     const deltaY = point2.y - point1.y;
-    // if (deltaY > 0) {
-    //   direction.y = 1;
-    // } else if (deltaY < 0) {
-    //   direction.y = -1;
-    // } else {
-    //   direction.y = 0;
-    // }
     direction.y = deltaY > 0 ? 1 : -1;
   }
 
   if (point1.y === point2.y) {
     const deltaX = point2.x - point1.x;
-    // if (deltaX > 0) {
-    //   direction.x = 1;
-    // } else if (deltaX < 0) {
-    //   direction.x = -1;
-    // } else {
-    //   direction.x = 0;
-    // }
     direction.x = deltaX > 0 ? 1 : -1;
   }
 

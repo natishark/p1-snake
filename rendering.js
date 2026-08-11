@@ -42,7 +42,7 @@ class Rendering {
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.drawField(game.fieldSize);
-      this.drawSnake(game.snakeBody.getBodyPoints(), game.fieldSize);
+      this.drawSnake(game.snakeBody.getDirectionedBodyPoints(), game.fieldSize);
       this.drawApple(game.apple, game.fieldSize);
     }
   }
@@ -63,14 +63,14 @@ class Rendering {
     ctx.stroke();
   }
 
-  drawSnake(snakeBodyPoints, fieldSize) {
+  drawSnake(snakeDirectionedBodyPoints, fieldSize) {
     const ctx = this.ctx;
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
 
-    this.drawHead(snakeBodyPoints[0].x, snakeBodyPoints[0].y, fieldSize);
+    this.drawHead(snakeDirectionedBodyPoints[0].point.x, snakeDirectionedBodyPoints[0].point.y, fieldSize);
 
-    for (let i = 1; i < snakeBodyPoints.length; i++) {
-      this.drawBodyPoint(snakeBodyPoints[i].x, snakeBodyPoints[i].y, fieldSize);
+    for (let i = 1; i < snakeDirectionedBodyPoints.length; i++) {
+      this.drawBodyPoint(snakeDirectionedBodyPoints[i].point.x, snakeDirectionedBodyPoints[i].point.y, fieldSize);
     }
   }
 
