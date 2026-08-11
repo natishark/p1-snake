@@ -39,6 +39,7 @@ const imageSources = [
   "/assets/draw/tail-left.svg",
   "/assets/draw/tail-right.svg",
   "/assets/draw/tail-up.svg",
+  "/assets/draw/apple-body.svg",
 ];
 
 const promises = imageSources.map(src => {

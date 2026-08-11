@@ -38,7 +38,7 @@ class Rendering {
     if (this.ctx) {
       const ctx = this.ctx;
 
-      ctx.fillStyle = '#ffffffff';
+      ctx.fillStyle = 'rgb(252, 224, 181)';
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.drawField(game.fieldSize);
@@ -67,34 +67,80 @@ class Rendering {
     const ctx = this.ctx;
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
 
-    this.drawHead(snakeDirectionedBodyPoints[0].point.x, snakeDirectionedBodyPoints[0].point.y, fieldSize);
+    const pointsNumber = snakeDirectionedBodyPoints.length;
 
-    for (let i = 1; i < snakeDirectionedBodyPoints.length; i++) {
-      this.drawBodyPoint(snakeDirectionedBodyPoints[i].point.x, snakeDirectionedBodyPoints[i].point.y, fieldSize);
+    this.drawHead(
+      snakeDirectionedBodyPoints[0].point, 
+      snakeDirectionedBodyPoints[0].direction, 
+      fieldSize
+    );
+
+    for (let i = 1; i < pointsNumber - 1; i++) {
+      this.drawBodyPoint(
+        snakeDirectionedBodyPoints[i].point, 
+        snakeDirectionedBodyPoints[i].direction, 
+        fieldSize
+      );
     }
+
+    this.drawTail(
+      snakeDirectionedBodyPoints[pointsNumber - 1].point,
+      snakeDirectionedBodyPoints[pointsNumber - 1].direction,
+      fieldSize
+    )
   }
 
   drawApple(apple, fieldSize) {
-    if (this.ctx) {
-      const ctx = this.ctx;
-      if (apple !== undefined) {
-        ctx.fillStyle = '#910404ff';
-
-        const cellWidth = this.pixelFieldSize / fieldSize;
-        ctx.beginPath();
-        ctx.arc((apple.x + 0.5) * cellWidth, (apple.y + 0.5) * cellWidth, cellWidth * 0.4, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    if (apple !== undefined) {
+      this.drawImageInACell(this.imageSourcesCollection.appleBody, apple.x, apple.y, fieldSize);
     }
   }
 
-  drawHead(x, y, fieldSize) {
-    // this.drawSquareInACell(this.snakeHeadPointMargin, x, y, fieldSize);
-    this.drawImageInACell(this.imageSourcesCollection.headRight, x, y, fieldSize);
+  drawHead(point, direction, fieldSize) {
+    const image = (() => {
+      switch (true) {
+        case direction.x > 0:
+          return this.imageSourcesCollection.headRight;
+        case direction.x < 0:
+          return this.imageSourcesCollection.headLeft;
+        case direction.y > 0:
+          return this.imageSourcesCollection.headDown;
+        case direction.y < 0:
+          return this.imageSourcesCollection.headUp;
+      }
+    })();
+    this.drawImageInACell(image, point.x, point.y, fieldSize);
   }
 
-  drawBodyPoint(x, y, fieldSize) {
-    this.drawSquareInACell(this.snakeBodyPointMargin, x, y, fieldSize);
+  drawTail(point, direction, fieldSize) {
+    const image = (() => {
+      switch (true) {
+        case direction.x > 0:
+          return this.imageSourcesCollection.tailLeft;
+        case direction.x < 0:
+          return this.imageSourcesCollection.tailRight;
+        case direction.y > 0:
+          return this.imageSourcesCollection.tailUp;
+        case direction.y < 0:
+          return this.imageSourcesCollection.tailDown;
+      }
+    })();
+    this.drawImageInACell(image, point.x, point.y, fieldSize);
+  }
+
+  drawBodyPoint(point, direction, fieldSize) {
+    console.log("drawBodyPoint: direction ", direction.x, " and ", direction.y);
+    const image = (() => {
+      switch (true) {
+        case direction.x === 0 && direction.y === 0:
+          return this.imageSourcesCollection.bodyJoint;
+        case direction.x === 0:
+          return this.imageSourcesCollection.bodyVertical;
+        case direction.y === 0:
+          return this.imageSourcesCollection.bodyHorizontal;
+      }
+    })();
+    this.drawImageInACell(image, point.x, point.y, fieldSize);
   }
 
   drawSquareInACell(margin, x, y, fieldSize) {

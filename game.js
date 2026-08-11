@@ -64,8 +64,6 @@ class Game {
       }
     }
 
-    console.log("update game: ", this.snakeBody);
-
     if (this.snakeBody.size === this.fieldSize * this.fieldSize) {
       this.currentGameState = GameState.Stop;
       this.currentGameResult = GameResult.Win;
