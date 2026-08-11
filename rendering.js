@@ -49,7 +49,7 @@ class Rendering {
 
   drawField(fieldSize) {
     const ctx = this.ctx;
-    ctx.strokeStyle = 'rgba(41, 19, 78, 0.5)';
+    ctx.strokeStyle = 'rgba(136, 97, 50, 0.5)';
     ctx.beginPath();
     for (let row = 0; row <= fieldSize; row++) {
       for (let column = 0; column <= fieldSize; column++) {
