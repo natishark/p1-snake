@@ -14,10 +14,11 @@ const STORAGE_BEST_SCORE_KEY = "snake-best-score";
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
-const imageSourcesCollection = {};
+const appleImage = new Image();
+appleImage.src = "/assets/draw/apple.svg";
 
 const rendering = new Rendering(
-  imageSourcesCollection,
+  appleImage,
   windowHeight, 
   windowWidth, 
   fieldSizeRatio, 
@@ -27,57 +28,7 @@ const rendering = new Rendering(
 
 let game = new Game(fieldSize, startDirection);
 
-const imageSources = [
-  "/assets/draw/body-horizontal.svg", 
-  "/assets/draw/body-joint.svg", 
-  "/assets/draw/body-vertical.svg",
-  "/assets/draw/head-down.svg",
-  "/assets/draw/head-left.svg",
-  "/assets/draw/head-right.svg",
-  "/assets/draw/head-up.svg",
-  "/assets/draw/tail-down.svg",
-  "/assets/draw/tail-left.svg",
-  "/assets/draw/tail-right.svg",
-  "/assets/draw/tail-up.svg",
-  "/assets/draw/apple-body.svg",
-];
-
-const promises = imageSources.map(src => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      const imgProperty = src.
-        split("/")[3].
-        split(".")[0].
-        split("-").
-        map((val, i) => {
-          if (i === 0) {
-            return val;
-          }
-          return  val.charAt(0).toUpperCase() + val.slice(1);
-        }).join("");
-      resolve({prop: imgProperty, img: img}); // Успех: возвращаем изображение или его данные
-    };
-    img.onerror = () => {
-      reject(new Error(`Ошибка загрузки: ${src}`)); // Ошибка
-    };
-    });
-});
-
-Promise.all(promises)
-  .then(images => {
-    console.log('Все изображения готовы:', images);
-    images.forEach(imageObj => imageSourcesCollection[imageObj.prop] = imageObj.img);
-    rendering.drawGame(game);
-    console.log(imageSourcesCollection);
-    console.log(imageSourcesCollection.tailUp);
-  })
-  .catch(error => {
-    console.error('Ошибка при загрузке:', error);
-  });
-
-
+appleImage.onload = () => rendering.drawGame(game);
 
 window.addEventListener('resize', function() {
   windowWidth = window.innerWidth;

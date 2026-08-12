@@ -1,13 +1,16 @@
+import { getDrawableImageSources } from "./getDrawableImageSources.js";
+
 class Rendering {
   constructor(
-    imageSourcesCollection, 
+    appleImage,
     windowHeight, 
     windowWidth, 
     fieldSizeRatio, 
     snakeHeadPointMargin, 
     snakeBodyPointMargin
   ) {
-    this.imageSourcesCollection = imageSourcesCollection;
+    this.appleImage = appleImage;    
+    this.drawableImageSources = getDrawableImageSources();
     this.snakeHeadPointMargin = snakeHeadPointMargin;
     this.snakeBodyPointMargin = snakeBodyPointMargin;
 
@@ -92,7 +95,15 @@ class Rendering {
 
   drawApple(apple, fieldSize) {
     if (apple !== undefined) {
-      this.drawImageInACell(this.imageSourcesCollection.appleBody, apple.x, apple.y, fieldSize);
+      const cellWidth = this.pixelFieldSize / fieldSize;
+
+      this.ctx.drawImage(
+        this.appleImage, 
+        cellWidth * apple.x + 1, 
+        cellWidth * apple.y + 1, 
+        cellWidth - 2, 
+        cellWidth - 2
+      );
     }
   }
 
@@ -100,32 +111,32 @@ class Rendering {
     const image = (() => {
       switch (true) {
         case direction.x > 0:
-          return this.imageSourcesCollection.headRight;
+          return "headRight";
         case direction.x < 0:
-          return this.imageSourcesCollection.headLeft;
+          return "headLeft";
         case direction.y > 0:
-          return this.imageSourcesCollection.headDown;
+          return "headDown";
         case direction.y < 0:
-          return this.imageSourcesCollection.headUp;
+          return "headUp";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize);
+    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(153, 33, 33)");
   }
 
   drawTail(point, direction, fieldSize) {
     const image = (() => {
       switch (true) {
         case direction.x > 0:
-          return this.imageSourcesCollection.tailLeft;
+          return "tailLeft";
         case direction.x < 0:
-          return this.imageSourcesCollection.tailRight;
+          return "tailRight";
         case direction.y > 0:
-          return this.imageSourcesCollection.tailUp;
+          return "tailUp";
         case direction.y < 0:
-          return this.imageSourcesCollection.tailDown;
+          return "tailDown";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize);
+    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(33, 153, 63)");
   }
 
   drawBodyPoint(point, direction, fieldSize) {
@@ -133,14 +144,14 @@ class Rendering {
     const image = (() => {
       switch (true) {
         case direction.x === 0 && direction.y === 0:
-          return this.imageSourcesCollection.bodyJoint;
+          return "bodyJoint";
         case direction.x === 0:
-          return this.imageSourcesCollection.bodyVertical;
+          return "bodyVertical";
         case direction.y === 0:
-          return this.imageSourcesCollection.bodyHorizontal;
+          return "bodyHorizontal";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize);
+    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(71, 33, 153)");
   }
 
   drawSquareInACell(margin, x, y, fieldSize) {
@@ -154,10 +165,17 @@ class Rendering {
     this.ctx.fillRect(xStart, yStart, xEnd - xStart, yEnd - yStart);
   }
 
-  drawImageInACell(image, x, y, fieldSize) {
+  drawImageInACell(image, x, y, fieldSize, color) {
     const cellWidth = this.pixelFieldSize / fieldSize;
 
-    this.ctx.drawImage(image, cellWidth * x + 1, cellWidth * y + 1, cellWidth - 2, cellWidth - 2);
+    this.drawableImageSources[image].draw(
+      this.ctx, 
+      cellWidth * x + 1, 
+      cellWidth * y + 1, 
+      cellWidth - 2, 
+      cellWidth - 2,
+      color
+    )
   }
 
   drawLine(fromX, fromY, toX, toY) {
