@@ -53,18 +53,17 @@ class Rendering {
 
   drawField(fieldSize) {
     const ctx = this.ctx;
-    ctx.strokeStyle = 'rgba(136, 97, 50, 0.5)';
-    ctx.beginPath();
-    for (let row = 0; row <= fieldSize; row++) {
-      for (let column = 0; column <= fieldSize; column++) {
+    ctx.fillStyle = "rgba(101, 66, 22, 0.05)";
+
+    for (let row = 1; row < fieldSize; row++) {
+      for (let column = 1; column < fieldSize; column++) {
         const rowPix = Math.floor(this.pixelFieldSize / fieldSize * row);
         const columnPix = Math.floor(this.pixelFieldSize / fieldSize * column);
 
-        this.drawLine(rowPix, 0, rowPix, this.pixelFieldSize);
-        this.drawLine(0, columnPix, this.pixelFieldSize, columnPix);
+        this.ctx.fillRect(rowPix, 0, 1, this.pixelFieldSize);
+        this.ctx.fillRect(0, columnPix, this.pixelFieldSize, 1);   
       }
     }
-    ctx.stroke();
   }
 
   drawSnake(snakeDirectionedBodyPoints, fieldSize) {
@@ -186,11 +185,6 @@ class Rendering {
       cellWidth - 2,
       color
     )
-  }
-
-  drawLine(fromX, fromY, toX, toY) {
-    this.ctx.moveTo(fromX, fromY);
-    this.ctx.lineTo(toX, toY);
   }
 }
 
