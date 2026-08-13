@@ -1,4 +1,3 @@
-// snake is an array of points
 class Snake {
   constructor(xStart, yStart, xEnd, yEnd, size) {
     this.body = [new UnbreakableSegment([new Point(xStart, yStart), new Point(xEnd, yEnd)])];

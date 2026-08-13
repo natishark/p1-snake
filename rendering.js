@@ -1,4 +1,5 @@
 import { getDrawableImageSources } from "./getDrawableImageSources.js";
+import { RgbaColor, getSoftGradientBreakdown } from "./color.js";
 
 class Rendering {
   constructor(
@@ -68,28 +69,37 @@ class Rendering {
 
   drawSnake(snakeDirectionedBodyPoints, fieldSize) {
     const ctx = this.ctx;
-    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+    const softnessThreshold = 5;
 
     const pointsNumber = snakeDirectionedBodyPoints.length;
+    const gradientBreakdown = getSoftGradientBreakdown(
+      new RgbaColor(0, 36, 156),
+      new RgbaColor(255, 0, 148),
+      pointsNumber,
+      softnessThreshold
+    )
 
     this.drawHead(
       snakeDirectionedBodyPoints[0].point, 
       snakeDirectionedBodyPoints[0].direction, 
-      fieldSize
+      fieldSize,
+      gradientBreakdown[0].toString()
     );
 
     for (let i = 1; i < pointsNumber - 1; i++) {
       this.drawBodyPoint(
         snakeDirectionedBodyPoints[i].point, 
         snakeDirectionedBodyPoints[i].direction, 
-        fieldSize
+        fieldSize,
+        gradientBreakdown[i].toString()
       );
     }
 
     this.drawTail(
       snakeDirectionedBodyPoints[pointsNumber - 1].point,
       snakeDirectionedBodyPoints[pointsNumber - 1].direction,
-      fieldSize
+      fieldSize,
+      gradientBreakdown[pointsNumber - 1].toString()
     )
   }
 
@@ -107,7 +117,7 @@ class Rendering {
     }
   }
 
-  drawHead(point, direction, fieldSize) {
+  drawHead(point, direction, fieldSize, color) {
     const image = (() => {
       switch (true) {
         case direction.x > 0:
@@ -120,10 +130,10 @@ class Rendering {
           return "headUp";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(153, 33, 33)");
+    this.drawImageInACell(image, point.x, point.y, fieldSize, color);
   }
 
-  drawTail(point, direction, fieldSize) {
+  drawTail(point, direction, fieldSize, color) {
     const image = (() => {
       switch (true) {
         case direction.x > 0:
@@ -136,10 +146,10 @@ class Rendering {
           return "tailDown";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(33, 153, 63)");
+    this.drawImageInACell(image, point.x, point.y, fieldSize, color);
   }
 
-  drawBodyPoint(point, direction, fieldSize) {
+  drawBodyPoint(point, direction, fieldSize, color) {
     console.log("drawBodyPoint: direction ", direction.x, " and ", direction.y);
     const image = (() => {
       switch (true) {
@@ -151,7 +161,7 @@ class Rendering {
           return "bodyHorizontal";
       }
     })();
-    this.drawImageInACell(image, point.x, point.y, fieldSize, "rgb(71, 33, 153)");
+    this.drawImageInACell(image, point.x, point.y, fieldSize, color);
   }
 
   drawSquareInACell(margin, x, y, fieldSize) {
