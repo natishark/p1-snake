@@ -6,13 +6,19 @@ import { getLocalStorageOrNull } from "./storageCheck.js";
 // to start server use 'live-server .' in console in project floder for now
 
 const fieldSize = 16; 
-const fieldSizeRatio = 0.7;
 const startDirection = new Point(1, 0);
 
 const STORAGE_BEST_SCORE_KEY = "snake-best-score";
 
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
+
+const fieldSizeRatio = countFieldSizeRatio(windowWidth, windowHeight);
+
+function countFieldSizeRatio(width, height) {
+  const windowRatio = Math.max(width, height) / Math.min(width, height);
+  return (windowRatio < 1.4) ? 0.5 : 0.7;
+}
 
 const appleImage = new Image();
 appleImage.src = "/assets/draw/apple.svg";
@@ -31,7 +37,7 @@ let game = new Game(fieldSize, startDirection);
 window.addEventListener('resize', function() {
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
-  rendering.updateCanvasSize(windowWidth, windowHeight);
+  rendering.updateCanvasSize(windowWidth, windowHeight, countFieldSizeRatio(windowWidth, windowHeight));
   rendering.drawGame(game);
 });
 

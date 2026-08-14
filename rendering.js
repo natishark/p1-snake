@@ -28,7 +28,8 @@ class Rendering {
     }
   }
 
-  updateCanvasSize(windowWidth, windowHeight) {
+  updateCanvasSize(windowWidth, windowHeight, fieldSizeRatio) {
+    this.fieldSizeRatio = fieldSizeRatio;
     this.pixelFieldSize = this.countPixelFieldSize(windowHeight, windowWidth, this.fieldSizeRatio);
     this.canvas.width = this.pixelFieldSize;
     this.canvas.height = this.pixelFieldSize;
