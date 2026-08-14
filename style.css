@@ -115,7 +115,15 @@ body {
   fill: antiquewhite;
 }
 
-.buttons-section button:hover svg {
+.buttons-section button:disabled {
+  cursor: default;
+}
+
+.buttons-section button:disabled svg {
+  fill: rgba(250, 235, 215, 0.4);
+}
+
+.buttons-section button:enabled:hover svg {
   fill: rgb(231, 199, 156);
 }
 

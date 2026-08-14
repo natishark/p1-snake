@@ -28,11 +28,6 @@ const rendering = new Rendering(
 
 let game = new Game(fieldSize, startDirection);
 
-appleImage.onload = () => {
-  cancelAnimationFrame(animationFrameRequestId);
-  rendering.drawGame(game);
-}
-
 window.addEventListener('resize', function() {
   windowWidth = window.innerWidth;
   windowHeight = window.innerHeight;
@@ -143,6 +138,7 @@ function playGame() {
   animationFrameRequestId = requestAnimationFrame(gameLoop);
   playButton.disabled = true;
   stopButton.disabled = false;
+  restartButton.disabled = false;
 }
 
 function stopGame() {
@@ -161,8 +157,12 @@ function restartGame() {
   playGame();
 }
 
+appleImage.onload = () => {
+  cancelAnimationFrame(animationFrameRequestId);
+  rendering.drawGame(game);
+  playButton.disabled = false;
+}
 
-// SO WE'RE WORKING ON LOADING CIRCLE HERE! STAY TUNED!
 const loadingUpdateInterval = 30;
 let loadingShift = 0;
 
