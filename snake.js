@@ -9,44 +9,6 @@ class Snake {
     this.size = size;
   }
 
-  getBodyPoints() {
-    const bodyPoints = [];
-    for (let segment of this.body) {
-      const partNum = segment.size() - 1;
-
-      for (let i = 0; i < partNum; i++) {
-        if (segment.get(i).x !== segment.get(i + 1).x) {
-          let j = segment.get(i).x;
-          while (true) {
-            bodyPoints.push(new Point(j, segment.get(i).y));
-
-            if (segment.get(i + 1).x < j) {
-              j--;
-            } else if (segment.get(i + 1).x > j) {
-              j++;
-            } else {
-              break;
-            }
-          }
-        } else {
-          let j = segment.get(i).y;
-          while (true) {
-            bodyPoints.push(new Point(segment.get(i).x, j));
-            
-            if (segment.get(i + 1).y < j) {
-              j--;
-            } else if (segment.get(i + 1).y > j) {
-              j++;
-            } else {
-              break;
-            }
-          }
-        }
-      }
-    }
-    return bodyPoints;
-  }
-
   getDirectionedBodyPoints() {
     const directionedBodyPoints = [];
     for (let segment of this.body) {
