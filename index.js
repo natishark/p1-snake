@@ -1,5 +1,5 @@
 import { Game, GameState, GameResult } from "./game.js";
-import { Point } from "./snake.js";
+import { countVector, Point } from "./snake.js";
 import { Rendering } from "./rendering.js";
 import { getLocalStorageOrNull } from "./storageCheck.js";
 
@@ -62,9 +62,14 @@ document.addEventListener('keydown', function(event) {
         break;
     }
 
+    const currentDirection = countVector(
+      game.snakeBody.body[0].get(1),
+      game.snakeBody.body[0].get(0)
+    );
+
     if (
-      Math.abs(newDirection.x - game.direction.x) < 2 && 
-      Math.abs(newDirection.y - game.direction.y) < 2
+      Math.abs(newDirection.x - currentDirection.x) < 2 && 
+      Math.abs(newDirection.y - currentDirection.y) < 2
     ) {
       game.direction = newDirection;
     }

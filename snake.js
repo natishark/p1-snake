@@ -56,9 +56,7 @@ class Snake {
         const currentDirection = countVector(segment.get(i + 1), segment.get(i));
         if (segment.get(i).x !== segment.get(i + 1).x) {
           let j = segment.get(i).x - currentDirection.x;
-          // we're changing everything here because we now have virtual head but it seems hard. Good luck!
           while (true) {
-            // directionedBodyPoints.push(new Point(j, segment.get(i).y));
             directionedBodyPoints.push({
               point: new Point(j, segment.get(i).y),
               direction: currentDirection
@@ -233,4 +231,4 @@ function countVector(point1, point2) {
   return direction;
 }
 
-export { Snake, Point, UnbreakableSegment };
+export { Snake, Point, UnbreakableSegment, countVector };
