@@ -105,6 +105,13 @@ class Snake {
       firstSegment.get(0).y - currentDirection.y + 2 * direction.y,
     );
 
+    if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
+      firstSegment.set(0, newHeadPoint);
+    } else {
+      firstSegment.set(0, new Point(firstSegment.get(0).x - currentDirection.x, firstSegment.get(0).y - currentDirection.y));
+      firstSegment.unshift(newHeadPoint);
+    }
+
     if (
       newHeadPoint.x > fieldSize || 
       newHeadPoint.x < -1        ||
@@ -112,11 +119,7 @@ class Snake {
       newHeadPoint.y < -1
     ) {
       this.body.unshift(this.countNewSegment(newHeadPoint, fieldSize));
-    } else if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
-      firstSegment.set(0, newHeadPoint);
-    } else {
-      firstSegment.set(0, new Point(firstSegment.get(0).x - currentDirection.x, firstSegment.get(0).y - currentDirection.y));
-      firstSegment.unshift(newHeadPoint);
+      firstSegment.set(0,  new Point(firstSegment.get(0).x - direction.x, firstSegment.get(0).y - direction.y));
     }
 
     this.size++;
