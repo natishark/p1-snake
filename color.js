@@ -41,4 +41,4 @@ function getGradientBreakdown(startColor, endColor, colorsNumber) {
   return breakdown;
 }
 
-export { RgbaColor, getSoftGradientBreakdown };
+export { RgbaColor, getGradientBreakdown, getSoftGradientBreakdown };

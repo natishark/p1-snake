@@ -1,5 +1,5 @@
 import { getDrawableImageSources } from "./getDrawableImageSources.js";
-import { RgbaColor, getSoftGradientBreakdown } from "./color.js";
+import { RgbaColor, getGradientBreakdown, getSoftGradientBreakdown } from "./color.js";
 
 class Rendering {
   constructor(
@@ -38,12 +38,40 @@ class Rendering {
     return Math.floor(Math.min(windowHeight, windowWidth) * fieldSizeRatio);
   }
 
+  drawLoading(shift) {
+    const colorsNumber = 50;
+    const ctx = this.ctx;
+
+    ctx.fillStyle = 'rgb(252, 224, 181)';
+    ctx.fillRect(0, 0, this.pixelFieldSize, this.pixelFieldSize);
+
+    const gradientBreakdown = getGradientBreakdown(
+      new RgbaColor(0, 36, 156),
+      new RgbaColor(255, 0, 148),
+      colorsNumber
+    )
+
+    const radianStep = 2 * Math.PI / colorsNumber;
+    const centerCoordinate = Math.round(this.pixelFieldSize / 2);
+    const radius = Math.round(this.pixelFieldSize / 18);
+
+    ctx.lineWidth = 7;
+    for (let i = 0; i < colorsNumber; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = gradientBreakdown[(shift + i) % colorsNumber];
+      ctx.arc(centerCoordinate, centerCoordinate, radius, i * radianStep - 0.001, (i + 1) * radianStep, false);
+      ctx.stroke();
+    }
+
+    return (shift + 1) % colorsNumber;
+  }
+
   drawGame(game) {
     if (this.ctx) {
       const ctx = this.ctx;
 
       ctx.fillStyle = 'rgb(252, 224, 181)';
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      ctx.fillRect(0, 0, this.pixelFieldSize, this.pixelFieldSize);
 
       this.drawField(game.fieldSize);
       this.drawSnake(game.snakeBody.getDirectionedBodyPoints(), game.fieldSize);
