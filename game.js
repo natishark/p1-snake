@@ -4,6 +4,7 @@ import { getRandomUnoccupiedPoint } from "./random.js";
 const GameState = {
   Play: "Play",
   Stop: "Stop",
+  AwaitingStart: "AwaitingStart",
 }
 
 const GameResult = {
@@ -33,11 +34,14 @@ class Game {
       this.occupationMap.push(row);
     }
 
-    const snakeHeadCoord = Math.floor(fieldSize / 2) - 1;
+    let snakeHeadCoord = Math.floor(fieldSize / 2) - 1;
+    if (snakeHeadCoord < 2) {
+      snakeHeadCoord = 2;
+    }
     this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - 2, snakeHeadCoord, 2);
     this.fillOccupied();
     this.apple = getRandomUnoccupiedPoint(fieldSize, this.snakeBody.size, this.occupationMap);
-    this.currentGameState = GameState.Stop;
+    this.currentGameState = GameState.AwaitingStart;
     this.currentGameResult = GameResult.Process;
   }
 

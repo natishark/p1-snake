@@ -67,6 +67,10 @@ body {
   height: 3.5rem;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .game-body {
   padding: 4vh;
   background-color: rgb(101, 66, 22);

@@ -1,5 +1,6 @@
 import { getDrawableImageSources } from "./getDrawableImageSources.js";
 import { RgbaColor, getGradientBreakdown, getSoftGradientBreakdown } from "./color.js";
+import { GameResult, GameState } from "./game.js";
 
 class Rendering {
   constructor(
@@ -11,6 +12,7 @@ class Rendering {
     snakeBodyPointMargin
   ) {
     this.appleImage = appleImage;    
+    this.textFont = null;
     this.drawableImageSources = getDrawableImageSources();
     this.snakeHeadPointMargin = snakeHeadPointMargin;
     this.snakeBodyPointMargin = snakeBodyPointMargin;
@@ -77,7 +79,67 @@ class Rendering {
       this.drawField(game.fieldSize);
       this.drawSnake(game.snakeBody.getDirectionedBodyPoints(), game.fieldSize);
       this.drawApple(game.apple, game.fieldSize);
+
+      if (game.currentGameState !== GameState.Play) {
+        this.drawOverlayInfo(game.currentGameState, game.currentGameResult, game.fieldSize);
+      }
     }
+  }
+
+  drawOverlayInfo(gameState, gameResult, fieldSize) {
+    const baseWidth = 300;
+    const baseFontSize = 18;
+    const baseRectPadding = 14;
+
+    const fontSize = Math.round(this.pixelFieldSize / baseWidth * baseFontSize) + "px";
+    const rectPadding = Math.round(this.pixelFieldSize / baseWidth * baseRectPadding);
+    const lineSpacing = 8;
+
+    const rectColor = "rgba(245, 245, 220, 0.9)";
+    const textColor = "rgb(101, 66, 22)";
+
+    const textLines = (() => {
+      switch (true) {
+        case gameState === GameState.AwaitingStart:
+          return "Чтобы начать игру,\nнажмите 'пробел' или\nкликните здесь";
+        case gameState === GameState.Stop && gameResult === GameResult.Process:
+          return "Пауза. Чтобы продолжить игру,\nнажмите 'пробел' или\nкликните здесь";
+        case gameState === GameState.Stop && gameResult === GameResult.Lose:
+          return "Поражение!\nЧтобы начать заново, нажмите\n'пробел' или кликните здесь";
+        case gameState === GameState.Stop && gameResult === GameResult.Win:
+          return "УРА! ПОБЕДА!\nЧтобы сыграть снова, нажмите\n'пробел' или кликните здесь";
+        default:
+          throw new Error("Not every state is handled in drawOverlayInfo");
+      }
+    })().split('\n');
+
+    const ctx = this.ctx;
+
+    ctx.font = `${fontSize} ${this.textFont}`;
+    const mMetrics = ctx.measureText('M');
+    const lineHeight = Math.abs(mMetrics.actualBoundingBoxAscent) + Math.abs(mMetrics.actualBoundingBoxDescent);
+    const textHeight = lineHeight * textLines.length + lineSpacing * (textLines.length - 1);
+    const textWidth = Math.max(...textLines.map(line => ctx.measureText(line).width));
+
+    ctx.fillStyle = rectColor;
+    const rectWidth = textWidth + 3 * rectPadding;
+    const rectHeight = textHeight + 2 * rectPadding;
+    ctx.fillRect(
+      (this.pixelFieldSize - rectWidth) / 2,
+      (this.pixelFieldSize - rectHeight) / 2,
+      rectWidth,
+      rectHeight
+    )
+
+    ctx.fillStyle = textColor;
+
+    textLines.forEach((textLine, index) => {
+      ctx.fillText(
+        textLine, 
+        (this.pixelFieldSize - ctx.measureText(textLine).width) / 2,
+        (this.pixelFieldSize - textHeight) / 2 + (index + 1) * lineHeight + index * lineSpacing - Math.abs(mMetrics.actualBoundingBoxDescent)
+      );
+    })
   }
 
   drawField(fieldSize) {
@@ -107,13 +169,6 @@ class Rendering {
       softnessThreshold
     )
 
-    this.drawHead(
-      snakeDirectionedBodyPoints[0].point, 
-      snakeDirectionedBodyPoints[0].direction, 
-      fieldSize,
-      gradientBreakdown[0].toString()
-    );
-
     for (let i = 1; i < pointsNumber - 1; i++) {
       this.drawBodyPoint(
         snakeDirectionedBodyPoints[i].point, 
@@ -129,6 +184,13 @@ class Rendering {
       fieldSize,
       gradientBreakdown[pointsNumber - 1].toString()
     )
+
+    this.drawHead(
+      snakeDirectionedBodyPoints[0].point, 
+      snakeDirectionedBodyPoints[0].direction, 
+      fieldSize,
+      gradientBreakdown[0].toString()
+    );
   }
 
   drawApple(apple, fieldSize) {
