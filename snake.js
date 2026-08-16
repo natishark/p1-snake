@@ -65,7 +65,11 @@ class Snake {
       firstSegment.get(0).y - currentDirection.y + 2 * direction.y,
     );
 
-    if (currentDirection.x === direction.x && currentDirection.y === direction.y || firstSegment.get(1).equals(firstSegment.get(0))) {
+    if (
+      currentDirection.x === direction.x && currentDirection.y === direction.y ||
+      firstSegment.get(0).x - currentDirection.x === firstSegment.get(1).x &&
+      firstSegment.get(0).y - currentDirection.y === firstSegment.get(1).y
+    ) {
       firstSegment.set(0, newHeadPoint);
     } else {
       firstSegment.set(0, new Point(firstSegment.get(0).x - currentDirection.x, firstSegment.get(0).y - currentDirection.y));
