@@ -5,7 +5,7 @@ import { getLocalStorageOrNull } from "./storageCheck.js";
 
 // to start server use 'live-server .' in console in project folder for now
 
-const fieldSize = 16; 
+const fieldSize = 10; 
 const startDirection = new Point(1, 0);
 
 const STORAGE_BEST_SCORE_KEY = "snake-best-score";
