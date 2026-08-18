@@ -22,11 +22,11 @@ function countFieldSizeRatio(width, height) {
 }
 
 const appleImage = new Image();
-appleImage.src = "assets/draw/apple.svg";
+appleImage.src = "./assets/draw/apple.svg";
 
 const fonts = [
-  new FontFace('Pixelated', 'url(fonts/8bitoperatorJVE.woff)'),
-  new FontFace('Pixelated', 'url(fonts/8bitoperatorJVE.ttf)'),
+  new FontFace('Pixelated', 'url(./fonts/8bitoperatorJVE.woff)'),
+  new FontFace('Pixelated', 'url(./fonts/8bitoperatorJVE.ttf)'),
 ];
 
 const rendering = new Rendering(
