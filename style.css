@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Pixelated';
-  src: url('/fonts/8bitoperatorJVE.ttf') format('ttf'),
-       url('/fonts/8bitoperatorJVE.woff') format('woff');
+  src: url('./fonts/8bitoperatorJVE.ttf') format('ttf'),
+       url('./fonts/8bitoperatorJVE.woff') format('woff');
 }
 
 * {
