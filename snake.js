@@ -94,6 +94,8 @@ class Snake {
   }
 
   moveTail() {
+    this.size--;
+    
     const lastSegment = this.body[this.body.length - 1];
 
     const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
@@ -117,8 +119,6 @@ class Snake {
     } else {
       lastSegment.set(lastSegment.size() - 1, newTailPoint);
     }
-
-    this.size--;
 
     return freedCell;
   }
