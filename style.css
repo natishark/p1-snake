@@ -72,7 +72,11 @@ body {
 }
 
 .game-body {
-  padding: 4vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0.6rem 1.6rem 1.6rem;
   background-color: rgb(101, 66, 22);
   border-radius: 1px;
   box-shadow: 8px -5px 0px 1px rgb(180, 146, 105);
