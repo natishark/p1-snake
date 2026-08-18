@@ -159,7 +159,30 @@ const IMAGE_SOURCES = {
         width: 9,
         height: 40,
       },
-     
+      {
+        x: 45,
+        y: 11,
+        width: 29,
+        height: 56,
+      },
+      {
+        x: 12,
+        y: 46,
+        width: 51,
+        height: 26,
+      },
+      {
+        x: 50,
+        y: 56,
+        width: 20,
+        height: 45,
+      },
+      {
+        x: 49,
+        y: 50,
+        width: 51,
+        height: 22,
+      },
     ]
   },
   headUp: {
@@ -199,7 +222,7 @@ const IMAGE_SOURCES = {
       {
         x: 10,
         y: 40,
-        width: 28,
+        width: 100,
         height: 20,
       },
       {
@@ -283,7 +306,7 @@ const IMAGE_SOURCES = {
       {
         x: 13,
         y: 70,
-        width: 29,
+        width: 97,
         height: 20,
       },
       {
@@ -350,7 +373,7 @@ const IMAGE_SOURCES = {
         x: 50,
         y: 13,
         width: -20,
-        height: 29,
+        height: 97,
       },
       {
         x: 28,
@@ -398,7 +421,7 @@ const IMAGE_SOURCES = {
         x: 80,
         y: 10,
         width: -20,
-        height: 28,
+        height: 100,
       },
       {
         x: 68,
