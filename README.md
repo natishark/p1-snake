@@ -5,7 +5,7 @@ This is a study project created to practice working with game states, event hand
 
 ## 🎮 Demo
 
-[Live demo](https://your-username.github.io/repo-name) (available after deployment)
+[Live demo](https://natishark.github.io/p1-snake/)
 
 ## 📸 Screenshots
 
