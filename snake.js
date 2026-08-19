@@ -16,6 +16,15 @@ class Snake {
 
       for (let i = 0; i < partNum; i++) {
         const currentDirection = countVector(segment.get(i + 1), segment.get(i));
+
+        const changePrevPointDirectionCondition = i === 0 &&
+          directionedBodyPoints.length > 0 &&
+          !directionedBodyPoints[directionedBodyPoints.length - 1].direction.equals(currentDirection);
+        
+        if (changePrevPointDirectionCondition) {
+          directionedBodyPoints[directionedBodyPoints.length - 1].direction = new Point(0, 0);
+        }
+
         if (segment.get(i).x !== segment.get(i + 1).x) {
           let j = segment.get(i).x - currentDirection.x;
           while (true) {
@@ -95,7 +104,7 @@ class Snake {
 
   moveTail() {
     this.size--;
-    
+
     const lastSegment = this.body[this.body.length - 1];
 
     const tailDirection = countVector(lastSegment.get(lastSegment.size() - 1), lastSegment.get(lastSegment.size() - 2));
@@ -182,7 +191,7 @@ class UnbreakableSegment {
 }
 
 function countVector(point1, point2) {
-  const direction = { x: 0, y: 0 };
+  const direction = new Point(0, 0);
 
   if (point1.x === point2.x) {
     const deltaY = point2.y - point1.y;

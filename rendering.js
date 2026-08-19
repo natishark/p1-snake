@@ -240,7 +240,6 @@ class Rendering {
   }
 
   drawBodyPoint(point, direction, fieldSize, color) {
-    console.log("drawBodyPoint: direction ", direction.x, " and ", direction.y);
     const image = (() => {
       switch (true) {
         case direction.x === 0 && direction.y === 0:

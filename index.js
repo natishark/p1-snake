@@ -3,8 +3,6 @@ import { countVector, Point } from "./snake.js";
 import { Rendering } from "./rendering.js";
 import { getLocalStorageOrNull } from "./storageCheck.js";
 
-// to start server use 'live-server .' in console in project folder for now
-
 const fieldSize = 10; 
 const startDirection = new Point(1, 0);
 const initialSnakeSize = 2;
@@ -191,7 +189,7 @@ function restartGame() {
   if (game.currentGameState === GameState.Play) {
     stopGame();
   }
-  game = new Game(fieldSize, startDirection);
+  game = new Game(fieldSize, startDirection, initialSnakeSize);
   rendering.drawGame(game);
 }
 
