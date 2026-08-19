@@ -22,7 +22,7 @@ class Game {
   fieldSize;
   direction;
 
-  constructor(fieldSize, direction) {
+  constructor(fieldSize, direction, initialSnakeSize) {
     this.fieldSize = fieldSize;
     this.direction = direction;
     this.occupationMap = [];
@@ -35,10 +35,10 @@ class Game {
     }
 
     let snakeHeadCoord = Math.floor(fieldSize / 2) - 1;
-    if (snakeHeadCoord < 2) {
-      snakeHeadCoord = 2;
+    if (snakeHeadCoord < initialSnakeSize) {
+      snakeHeadCoord = initialSnakeSize;
     }
-    this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - 2, snakeHeadCoord, 2);
+    this.snakeBody = new Snake(snakeHeadCoord, snakeHeadCoord, snakeHeadCoord - initialSnakeSize, snakeHeadCoord, 2);
     this.fillOccupied();
     this.apple = getRandomUnoccupiedPoint(fieldSize, this.snakeBody.size, this.occupationMap);
     this.currentGameState = GameState.AwaitingStart;

@@ -7,6 +7,7 @@ import { getLocalStorageOrNull } from "./storageCheck.js";
 
 const fieldSize = 10; 
 const startDirection = new Point(1, 0);
+const initialSnakeSize = 2;
 
 const STORAGE_BEST_SCORE_KEY = "snake-best-score";
 const CLICKABLE_CLASS = "clickable";
@@ -38,7 +39,7 @@ const rendering = new Rendering(
   0.3,
 );
 
-let game = new Game(fieldSize, startDirection);
+let game = new Game(fieldSize, startDirection, initialSnakeSize);
 
 window.addEventListener('resize', function() {
   windowWidth = window.innerWidth;
@@ -117,7 +118,7 @@ if (localStorageOrNull) {
 }
 
 function updateScores() {
-  scorePair.currentScore = game.snakeBody.size;
+  scorePair.currentScore = game.snakeBody.size - initialSnakeSize;
   currentScoreField.textContent = scorePair.currentScore;
   if ("bestScore" in scorePair && scorePair.currentScore > scorePair.bestScore) {
     scorePair.bestScore = scorePair.currentScore;
