@@ -78,6 +78,8 @@ document.addEventListener('keydown', function(event) {
         newDirection.y = 1;
         event.preventDefault();
         break;
+      default:
+        return;
     }
 
     const currentDirection = countVector(
